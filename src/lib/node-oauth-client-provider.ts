@@ -1,5 +1,5 @@
 import open from 'open'
-import { OAuthClientProvider } from '@modelcontextprotocol/sdk/client/auth.js'
+import { OAuthClientProvider, type OAuthDiscoveryState } from '@modelcontextprotocol/sdk/client/auth.js'
 import {
   OAuthClientInformationFull,
   OAuthClientInformationFullSchema,
@@ -31,6 +31,7 @@ export class NodeOAuthClientProvider implements OAuthClientProvider {
   private authorizeResource: string | undefined
   private noResource: boolean
   private vsCodeRedirect: boolean
+  private oauthMetadata: Record<string, unknown> | undefined
   private _state: string
   private _clientInfo: OAuthClientInformationFull | undefined
   private authorizationServerMetadata: AuthorizationServerMetadata | undefined
@@ -53,6 +54,7 @@ export class NodeOAuthClientProvider implements OAuthClientProvider {
     this.authorizeResource = options.authorizeResource
     this.noResource = options.noResource ?? false
     this.vsCodeRedirect = options.vsCodeRedirect ?? false
+    this.oauthMetadata = options.oauthMetadata
     this._state = this.vsCodeRedirect
       ? `http://127.0.0.1:${options.callbackPort}/?nonce=${randomUUID()}`
       : randomUUID()
@@ -87,6 +89,27 @@ export class NodeOAuthClientProvider implements OAuthClientProvider {
 
   state(): string {
     return this._state
+  }
+
+  /**
+   * Returns pre-fetched OAuth discovery state when --oauth-metadata-url is provided.
+   * This tells the SDK where the token endpoint is (e.g., Azure AD's token URL).
+   */
+  discoveryState(): OAuthDiscoveryState | undefined {
+    if (!this.oauthMetadata) {
+      return undefined
+    }
+    return {
+      authorizationServerUrl: this.options.serverUrl,
+      authorizationServerMetadata: this.oauthMetadata as any,
+    }
+  }
+
+  /**
+   * Saves discovery state (no-op, we use pre-fetched metadata)
+   */
+  saveDiscoveryState(_state: OAuthDiscoveryState): void {
+    // No-op: we use pre-fetched metadata from --oauth-metadata-url
   }
 
   /**

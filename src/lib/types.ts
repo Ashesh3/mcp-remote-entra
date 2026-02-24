@@ -35,6 +35,8 @@ export interface OAuthProviderOptions {
   noResource?: boolean
   /** When true, use https://vscode.dev/redirect as OAuth relay for Azure AD */
   vsCodeRedirect?: boolean
+  /** Pre-fetched authorization server metadata (e.g., from Azure AD openid-configuration) */
+  oauthMetadata?: Record<string, unknown>
   /** Pre-calculated server URL hash for cache isolation */
   serverUrlHash: string
   /** Authorization server metadata (optional, fetched if not provided) */

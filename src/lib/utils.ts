@@ -850,6 +850,25 @@ export async function parseCommandLineArgs(args: string[], usage: string) {
     log('Using https://vscode.dev/redirect as OAuth relay')
   }
 
+  // Parse --oauth-metadata-url flag
+  let oauthMetadata: Record<string, unknown> | undefined
+  const oauthMetadataUrlIndex = args.indexOf('--oauth-metadata-url')
+  if (oauthMetadataUrlIndex !== -1 && oauthMetadataUrlIndex < args.length - 1) {
+    const metadataUrl = args[oauthMetadataUrlIndex + 1]
+    log(`Fetching OAuth metadata from: ${metadataUrl}`)
+    try {
+      const response = await fetch(metadataUrl)
+      if (response.ok) {
+        oauthMetadata = (await response.json()) as Record<string, unknown>
+        log(`Fetched OAuth metadata with token_endpoint: ${oauthMetadata.token_endpoint}`)
+      } else {
+        log(`Warning: Failed to fetch OAuth metadata (HTTP ${response.status})`)
+      }
+    } catch (error) {
+      log(`Warning: Failed to fetch OAuth metadata: ${(error as Error).message}`)
+    }
+  }
+
   // Parse ignored tools
   const ignoredTools: string[] = []
   let j = 0
@@ -953,6 +972,7 @@ export async function parseCommandLineArgs(args: string[], usage: string) {
     authorizeResource,
     noResource,
     vsCodeRedirect,
+    oauthMetadata,
     ignoredTools,
     authTimeoutMs,
     serverUrlHash,

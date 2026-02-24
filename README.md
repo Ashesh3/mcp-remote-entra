@@ -248,6 +248,23 @@ You can specify multiple `--ignore-tool` flags to ignore different patterns. Exa
       ]
 ```
 
+* To provide the OAuth authorization server metadata URL (e.g., Azure AD's OpenID configuration), add the `--oauth-metadata-url` flag. This is needed when the MCP server does not host its own OAuth metadata and the authorization server (e.g., Azure AD) has a separate metadata endpoint. The metadata is fetched at startup and provides the correct `token_endpoint` for token exchange.
+
+```json
+      "args": [
+        "mcp-remote",
+        "https://your-entra-protected-server.example.com/v1/",
+        "--static-oauth-client-info",
+        "{\"client_id\":\"your-client-id\"}",
+        "--static-oauth-client-metadata",
+        "{\"scope\":\"api://your-app-id/mcp.tools\"}",
+        "--no-resource",
+        "--vscode-redirect",
+        "--oauth-metadata-url",
+        "https://login.microsoftonline.com/YOUR-TENANT-ID/v2.0/.well-known/openid-configuration"
+      ]
+```
+
 ### Transport Strategies
 
 MCP Remote supports different transport strategies when connecting to an MCP server. This allows you to control whether it uses Server-Sent Events (SSE) or HTTP transport, and in what order it tries them.

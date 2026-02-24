@@ -40,6 +40,7 @@ async function runClient(
   authorizeResource: string,
   noResource: boolean,
   vsCodeRedirect: boolean,
+  oauthMetadata: Record<string, unknown> | undefined,
   authTimeoutMs: number,
   serverUrlHash: string,
 ) {
@@ -77,6 +78,7 @@ async function runClient(
     authorizeResource,
     noResource,
     vsCodeRedirect,
+    oauthMetadata,
     serverUrlHash,
     authorizationServerMetadata: discoveryResult.authorizationServerMetadata,
     protectedResourceMetadata: discoveryResult.protectedResourceMetadata,
@@ -198,6 +200,7 @@ parseCommandLineArgs(process.argv.slice(2), 'Usage: npx tsx client.ts <https://s
       authorizeResource,
       noResource,
       vsCodeRedirect,
+      oauthMetadata,
       authTimeoutMs,
       serverUrlHash,
     }) => {
@@ -212,6 +215,7 @@ parseCommandLineArgs(process.argv.slice(2), 'Usage: npx tsx client.ts <https://s
         authorizeResource,
         noResource,
         vsCodeRedirect,
+        oauthMetadata,
         authTimeoutMs,
         serverUrlHash,
       )
