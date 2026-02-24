@@ -29,6 +29,7 @@ export class NodeOAuthClientProvider implements OAuthClientProvider {
   private staticOAuthClientMetadata: StaticOAuthClientMetadata
   private staticOAuthClientInfo: StaticOAuthClientInformationFull
   private authorizeResource: string | undefined
+  private noResource: boolean
   private _state: string
   private _clientInfo: OAuthClientInformationFull | undefined
   private authorizationServerMetadata: AuthorizationServerMetadata | undefined
@@ -49,6 +50,7 @@ export class NodeOAuthClientProvider implements OAuthClientProvider {
     this.staticOAuthClientMetadata = options.staticOAuthClientMetadata
     this.staticOAuthClientInfo = options.staticOAuthClientInfo
     this.authorizeResource = options.authorizeResource
+    this.noResource = options.noResource ?? false
     this._state = randomUUID()
     this._clientInfo = undefined
     this.authorizationServerMetadata = options.authorizationServerMetadata
@@ -258,7 +260,9 @@ export class NodeOAuthClientProvider implements OAuthClientProvider {
       // Ignore errors, metadata is optional
     })
 
-    if (this.authorizeResource) {
+    if (this.noResource) {
+      authorizationUrl.searchParams.delete('resource')
+    } else if (this.authorizeResource) {
       authorizationUrl.searchParams.set('resource', this.authorizeResource)
     }
 

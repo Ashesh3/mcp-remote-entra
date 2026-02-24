@@ -104,6 +104,34 @@ describe('NodeOAuthClientProvider - OAuth Scope Handling', () => {
 
       expect(authUrl.searchParams.get('scope')).toBe('openid email profile')
     })
+
+    it('should strip resource parameter when noResource is set', async () => {
+      provider = new NodeOAuthClientProvider({
+        ...defaultOptions,
+        noResource: true,
+        authorizeResource: 'https://example.com',
+      })
+
+      const authUrl = new URL('https://auth.example.com/authorize')
+      // Simulate SDK adding resource before redirectToAuthorization is called
+      authUrl.searchParams.set('resource', 'https://sdk-injected.example.com')
+      await provider.redirectToAuthorization(authUrl)
+
+      expect(authUrl.searchParams.has('resource')).toBe(false)
+      expect(authUrl.searchParams.get('scope')).toBe('openid email profile')
+    })
+
+    it('should set resource parameter when noResource is not set', async () => {
+      provider = new NodeOAuthClientProvider({
+        ...defaultOptions,
+        authorizeResource: 'https://example.com/resource',
+      })
+
+      const authUrl = new URL('https://auth.example.com/authorize')
+      await provider.redirectToAuthorization(authUrl)
+
+      expect(authUrl.searchParams.get('resource')).toBe('https://example.com/resource')
+    })
   })
 
   describe('backward compatibility', () => {
