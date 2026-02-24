@@ -838,6 +838,12 @@ export async function parseCommandLineArgs(args: string[], usage: string) {
     log(`Using authorize resource: ${authorizeResource}`)
   }
 
+  // Parse --no-resource flag
+  const noResource = args.includes('--no-resource')
+  if (noResource) {
+    log('Resource parameter will be suppressed from authorization URLs')
+  }
+
   // Parse ignored tools
   const ignoredTools: string[] = []
   let j = 0
@@ -939,6 +945,7 @@ export async function parseCommandLineArgs(args: string[], usage: string) {
     staticOAuthClientMetadata,
     staticOAuthClientInfo,
     authorizeResource,
+    noResource,
     ignoredTools,
     authTimeoutMs,
     serverUrlHash,

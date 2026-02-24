@@ -431,6 +431,25 @@ describe('Feature: Command Line Arguments Parsing', () => {
 
     consoleSpy.mockRestore()
   })
+
+  it('Scenario: Parse --no-resource flag', async () => {
+    const args = ['https://example.com/sse', '--no-resource']
+    const usage = 'test usage'
+
+    const result = await parseCommandLineArgs(args, usage)
+
+    expect(result.serverUrl).toBe('https://example.com/sse')
+    expect(result.noResource).toBe(true)
+  })
+
+  it('Scenario: noResource defaults to false', async () => {
+    const args = ['https://example.com/sse']
+    const usage = 'test usage'
+
+    const result = await parseCommandLineArgs(args, usage)
+
+    expect(result.noResource).toBe(false)
+  })
 })
 
 describe('Feature: Tool Filtering with Ignore Patterns', () => {
