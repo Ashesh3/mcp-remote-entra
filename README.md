@@ -233,6 +233,21 @@ You can specify multiple `--ignore-tool` flags to ignore different patterns. Exa
       ]
 ```
 
+* To use `https://vscode.dev/redirect` as the OAuth redirect URI relay, add the `--vscode-redirect` flag. This is useful when the Azure AD app registration only allows `https://vscode.dev/redirect` as a redirect URI (common with VS Code / Copilot CLI apps). The flag makes `mcp-remote` use the vscode.dev relay to forward the auth code back to your local callback server.
+
+```json
+      "args": [
+        "mcp-remote",
+        "https://your-entra-protected-server.example.com/v1/",
+        "--static-oauth-client-info",
+        "{\"client_id\":\"your-client-id\"}",
+        "--static-oauth-client-metadata",
+        "{\"scope\":\"api://your-app-id/mcp.tools\"}",
+        "--no-resource",
+        "--vscode-redirect"
+      ]
+```
+
 ### Transport Strategies
 
 MCP Remote supports different transport strategies when connecting to an MCP server. This allows you to control whether it uses Server-Sent Events (SSE) or HTTP transport, and in what order it tries them.

@@ -134,6 +134,51 @@ describe('NodeOAuthClientProvider - OAuth Scope Handling', () => {
     })
   })
 
+  describe('vscode redirect', () => {
+    it('should return vscode.dev/redirect as redirectUrl when vsCodeRedirect is set', () => {
+      provider = new NodeOAuthClientProvider({
+        ...defaultOptions,
+        vsCodeRedirect: true,
+      })
+
+      expect(provider.redirectUrl).toBe('https://vscode.dev/redirect')
+    })
+
+    it('should return localhost redirectUrl when vsCodeRedirect is not set', () => {
+      provider = new NodeOAuthClientProvider(defaultOptions)
+
+      expect(provider.redirectUrl).toBe('http://localhost:8080/oauth/callback')
+    })
+
+    it('should encode local callback URL in state when vsCodeRedirect is set', () => {
+      provider = new NodeOAuthClientProvider({
+        ...defaultOptions,
+        vsCodeRedirect: true,
+      })
+
+      const state = provider.state()
+      expect(state).toMatch(/^http:\/\/127\.0\.0\.1:8080\/\?nonce=/)
+    })
+
+    it('should use random UUID as state when vsCodeRedirect is not set', () => {
+      provider = new NodeOAuthClientProvider(defaultOptions)
+
+      const state = provider.state()
+      // UUID v4 format
+      expect(state).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)
+    })
+
+    it('should include vscode.dev/redirect in clientMetadata redirect_uris', () => {
+      provider = new NodeOAuthClientProvider({
+        ...defaultOptions,
+        vsCodeRedirect: true,
+      })
+
+      const metadata = provider.clientMetadata
+      expect(metadata.redirect_uris).toContain('https://vscode.dev/redirect')
+    })
+  })
+
   describe('backward compatibility', () => {
     it('should preserve existing custom scope behavior', () => {
       provider = new NodeOAuthClientProvider({

@@ -844,6 +844,12 @@ export async function parseCommandLineArgs(args: string[], usage: string) {
     log('Resource parameter will be suppressed from authorization URLs')
   }
 
+  // Parse --vscode-redirect flag
+  const vsCodeRedirect = args.includes('--vscode-redirect')
+  if (vsCodeRedirect) {
+    log('Using https://vscode.dev/redirect as OAuth relay')
+  }
+
   // Parse ignored tools
   const ignoredTools: string[] = []
   let j = 0
@@ -946,6 +952,7 @@ export async function parseCommandLineArgs(args: string[], usage: string) {
     staticOAuthClientInfo,
     authorizeResource,
     noResource,
+    vsCodeRedirect,
     ignoredTools,
     authTimeoutMs,
     serverUrlHash,

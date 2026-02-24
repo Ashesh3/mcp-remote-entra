@@ -30,6 +30,7 @@ export class NodeOAuthClientProvider implements OAuthClientProvider {
   private staticOAuthClientInfo: StaticOAuthClientInformationFull
   private authorizeResource: string | undefined
   private noResource: boolean
+  private vsCodeRedirect: boolean
   private _state: string
   private _clientInfo: OAuthClientInformationFull | undefined
   private authorizationServerMetadata: AuthorizationServerMetadata | undefined
@@ -51,7 +52,10 @@ export class NodeOAuthClientProvider implements OAuthClientProvider {
     this.staticOAuthClientInfo = options.staticOAuthClientInfo
     this.authorizeResource = options.authorizeResource
     this.noResource = options.noResource ?? false
-    this._state = randomUUID()
+    this.vsCodeRedirect = options.vsCodeRedirect ?? false
+    this._state = this.vsCodeRedirect
+      ? `http://127.0.0.1:${options.callbackPort}/?nonce=${randomUUID()}`
+      : randomUUID()
     this._clientInfo = undefined
     this.authorizationServerMetadata = options.authorizationServerMetadata
     this.protectedResourceMetadata = options.protectedResourceMetadata
@@ -59,6 +63,9 @@ export class NodeOAuthClientProvider implements OAuthClientProvider {
   }
 
   get redirectUrl(): string {
+    if (this.vsCodeRedirect) {
+      return 'https://vscode.dev/redirect'
+    }
     return `http://${this.options.host}:${this.options.callbackPort}${this.callbackPath}`
   }
 

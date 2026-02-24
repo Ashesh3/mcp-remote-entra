@@ -39,6 +39,7 @@ async function runClient(
   staticOAuthClientInfo: StaticOAuthClientInformationFull,
   authorizeResource: string,
   noResource: boolean,
+  vsCodeRedirect: boolean,
   authTimeoutMs: number,
   serverUrlHash: string,
 ) {
@@ -46,7 +47,8 @@ async function runClient(
   const events = new EventEmitter()
 
   // Create a lazy auth coordinator
-  const authCoordinator = createLazyAuthCoordinator(serverUrlHash, callbackPort, events, authTimeoutMs)
+  const callbackPath = vsCodeRedirect ? '/' : '/oauth/callback'
+  const authCoordinator = createLazyAuthCoordinator(serverUrlHash, callbackPort, events, authTimeoutMs, callbackPath)
 
   // Discover OAuth server info via Protected Resource Metadata (RFC 9728)
   // This probes the MCP server for WWW-Authenticate header and fetches PRM
@@ -74,6 +76,7 @@ async function runClient(
     staticOAuthClientInfo,
     authorizeResource,
     noResource,
+    vsCodeRedirect,
     serverUrlHash,
     authorizationServerMetadata: discoveryResult.authorizationServerMetadata,
     protectedResourceMetadata: discoveryResult.protectedResourceMetadata,
@@ -194,6 +197,7 @@ parseCommandLineArgs(process.argv.slice(2), 'Usage: npx tsx client.ts <https://s
       staticOAuthClientInfo,
       authorizeResource,
       noResource,
+      vsCodeRedirect,
       authTimeoutMs,
       serverUrlHash,
     }) => {
@@ -207,6 +211,7 @@ parseCommandLineArgs(process.argv.slice(2), 'Usage: npx tsx client.ts <https://s
         staticOAuthClientInfo,
         authorizeResource,
         noResource,
+        vsCodeRedirect,
         authTimeoutMs,
         serverUrlHash,
       )

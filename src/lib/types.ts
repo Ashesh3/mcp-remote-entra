@@ -33,6 +33,8 @@ export interface OAuthProviderOptions {
   authorizeResource?: string
   /** When true, strip the resource parameter from authorization URLs (for Entra ID v2.0) */
   noResource?: boolean
+  /** When true, use https://vscode.dev/redirect as OAuth relay for Azure AD */
+  vsCodeRedirect?: boolean
   /** Pre-calculated server URL hash for cache isolation */
   serverUrlHash: string
   /** Authorization server metadata (optional, fetched if not provided) */

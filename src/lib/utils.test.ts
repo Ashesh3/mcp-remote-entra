@@ -450,6 +450,25 @@ describe('Feature: Command Line Arguments Parsing', () => {
 
     expect(result.noResource).toBe(false)
   })
+
+  it('Scenario: Parse --vscode-redirect flag', async () => {
+    const args = ['https://example.com/sse', '--vscode-redirect']
+    const usage = 'test usage'
+
+    const result = await parseCommandLineArgs(args, usage)
+
+    expect(result.serverUrl).toBe('https://example.com/sse')
+    expect(result.vsCodeRedirect).toBe(true)
+  })
+
+  it('Scenario: vsCodeRedirect defaults to false', async () => {
+    const args = ['https://example.com/sse']
+    const usage = 'test usage'
+
+    const result = await parseCommandLineArgs(args, usage)
+
+    expect(result.vsCodeRedirect).toBe(false)
+  })
 })
 
 describe('Feature: Tool Filtering with Ignore Patterns', () => {
