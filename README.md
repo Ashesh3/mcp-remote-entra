@@ -219,6 +219,20 @@ You can specify multiple `--ignore-tool` flags to ignore different patterns. Exa
       ]
 ```
 
+* To suppress the `resource` parameter from OAuth authorization URLs, add the `--no-resource` flag. This is required for Microsoft Entra ID (Azure AD) v2.0 endpoints, which reject requests that include both `resource` and `scope` parameters (error `AADSTS9010010`). In v2.0, the resource should be embedded in the scope instead (e.g., `api://your-app/scope`).
+
+```json
+      "args": [
+        "mcp-remote",
+        "https://your-entra-protected-server.example.com/v1/",
+        "--static-oauth-client-info",
+        "{\"client_id\":\"your-client-id\"}",
+        "--static-oauth-client-metadata",
+        "{\"scope\":\"api://your-app-id/mcp.tools\"}",
+        "--no-resource"
+      ]
+```
+
 ### Transport Strategies
 
 MCP Remote supports different transport strategies when connecting to an MCP server. This allows you to control whether it uses Server-Sent Events (SSE) or HTTP transport, and in what order it tries them.
