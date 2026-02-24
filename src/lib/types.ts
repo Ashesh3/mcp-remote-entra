@@ -31,6 +31,8 @@ export interface OAuthProviderOptions {
   staticOAuthClientInfo?: StaticOAuthClientInformationFull
   /** Resource parameter to send to the authorization server */
   authorizeResource?: string
+  /** When true, strip the resource parameter from authorization URLs (for Entra ID v2.0) */
+  noResource?: boolean
   /** Pre-calculated server URL hash for cache isolation */
   serverUrlHash: string
   /** Authorization server metadata (optional, fetched if not provided) */
