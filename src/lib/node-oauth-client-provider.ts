@@ -281,6 +281,24 @@ export class NodeOAuthClientProvider implements OAuthClientProvider {
   }
 
   /**
+   * Validates and optionally overrides the resource URL used in token exchange requests.
+   * When noResource is set, returns undefined to suppress the resource parameter from
+   * both the authorization URL and the token exchange request.
+   * @param serverUrl The server URL derived from the MCP server
+   * @param resource The resource URL from protected resource metadata, if available
+   * @returns The resource URL to use, or undefined to omit the resource parameter
+   */
+  async validateResourceURL(serverUrl: string | URL, resource?: string): Promise<URL | undefined> {
+    if (this.noResource) {
+      return undefined
+    }
+    if (resource) {
+      return new URL(resource)
+    }
+    return undefined
+  }
+
+  /**
    * Redirects the user to the authorization URL
    * @param authorizationUrl The URL to redirect to
    */
