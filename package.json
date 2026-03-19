@@ -1,6 +1,6 @@
 {
   "name": "mcp-remote-entra",
-  "version": "0.1.38",
+  "version": "0.1.39",
   "description": "Remote proxy for Model Context Protocol, allowing local-only clients to connect to remote servers using oAuth",
   "keywords": [
     "mcp",
