@@ -134,6 +134,45 @@ describe('NodeOAuthClientProvider - OAuth Scope Handling', () => {
     })
   })
 
+  describe('validateResourceURL', () => {
+    it('should return undefined when noResource is set', async () => {
+      provider = new NodeOAuthClientProvider({
+        ...defaultOptions,
+        noResource: true,
+      })
+
+      const result = await provider.validateResourceURL('https://mcp.example.com/', 'https://mcp.example.com/')
+      expect(result).toBeUndefined()
+    })
+
+    it('should return undefined when noResource is set even with resource metadata', async () => {
+      provider = new NodeOAuthClientProvider({
+        ...defaultOptions,
+        noResource: true,
+      })
+
+      const result = await provider.validateResourceURL(
+        new URL('https://mcp.example.com/'),
+        'https://mcp.example.com/api',
+      )
+      expect(result).toBeUndefined()
+    })
+
+    it('should return resource URL when noResource is not set and resource is provided', async () => {
+      provider = new NodeOAuthClientProvider(defaultOptions)
+
+      const result = await provider.validateResourceURL('https://mcp.example.com/', 'https://mcp.example.com/')
+      expect(result).toEqual(new URL('https://mcp.example.com/'))
+    })
+
+    it('should return undefined when noResource is not set and no resource is provided', async () => {
+      provider = new NodeOAuthClientProvider(defaultOptions)
+
+      const result = await provider.validateResourceURL('https://mcp.example.com/')
+      expect(result).toBeUndefined()
+    })
+  })
+
   describe('vscode redirect', () => {
     it('should return vscode.dev/redirect as redirectUrl when vsCodeRedirect is set', () => {
       provider = new NodeOAuthClientProvider({
